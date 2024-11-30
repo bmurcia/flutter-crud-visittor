@@ -7,12 +7,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome the coctail App'),
+        title: const Text('Welcome the Visit APP'),
       ),
       body: ListView(
-        children: [
-          Image.asset('assets/codelab.png')
-        ],
+        
       ),
     );
   }
