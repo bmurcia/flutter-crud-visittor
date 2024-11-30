@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud_visitante/domain/services/firestore.dart';
 
@@ -21,11 +22,35 @@ class _HomePageState extends State<HomePage> {
   final companionsController = TextEditingController();
 
   void openVisitBox({String? docId}) {
+
+    if (docId != null) {
+      FirebaseFirestore.instance.collection('visits').doc(docId).get().then((doc) {
+        if (doc.exists) {
+          Map<String, dynamic> data = doc.data()!;
+          setState(() {
+            nameController.text = data['name'];
+            dniController.text = data['identification'];
+            visitReasonController.text = data['visitReason'];
+            personToVisitController.text = data['personToVisit'];
+            vehicleController.text = data['transportation'];
+            companionsController.text = data['companions'];
+          });
+        } else{
+          nameController.clear();
+          dniController.clear();  
+          visitReasonController.clear();
+          personToVisitController.clear();
+          vehicleController.clear();
+          companionsController.clear();
+        }
+      });
+    }
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Visit'),
+          title: Text(docId == null ? 'Add Visit' : 'Edit Visit'),
 
           content: SingleChildScrollView(
             child: Column(
@@ -71,6 +96,16 @@ class _HomePageState extends State<HomePage> {
                     entryTimeController.text,
                     companionsController.text,
                   );
+                } else {
+                  FirebaseFirestore.instance.collection('visits').doc(docId).update({
+                    'name': nameController.text,
+                    'identification': dniController.text,
+                    'visitReason': visitReasonController.text,
+                    'personToVisit': personToVisitController.text,
+                    'transportation': vehicleController.text,
+                    'entryTime': Timestamp.now(),
+                    'companions': companionsController.text,
+                  });
                 }
                 nameController.clear();
                 dniController.clear();
@@ -82,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               }, 
               
 
-              child: const Text('Add Visit'),
+              child: Text(docId == null ? 'Add Visit' : 'Edit Visit'),
             )
           ],
         );
@@ -101,6 +136,43 @@ class _HomePageState extends State<HomePage> {
           openVisitBox();
         },
         child: const Icon(Icons.add),
+      ),
+      body: StreamBuilder(
+        stream: FirestoreService().getVisits(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List visitList = snapshot.data!.docs;
+            return ListView.builder(
+              itemCount: visitList.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = visitList[index];
+                String docId = document.id;
+                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                String nameText = data['name'];
+
+                return ListTile(
+                  title: Text(nameText),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.settings),
+                        onPressed: () => openVisitBox(docId: docId),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: ()=> FirestoreService().deleteVisit(docId),
+                      ),
+                    ],
+                  )
+
+                );
+              },
+            );
+          } else {
+            return const Text('No hay visitas');
+          }
+        },
       ),
     );
   }

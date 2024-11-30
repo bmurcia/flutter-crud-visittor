@@ -21,4 +21,24 @@ class FirestoreService {
     final visitsStream = _visitsCollection.orderBy('entryTime', descending: true).snapshots();
     return visitsStream;
   }
+
+  //UPDATE
+  Future<void> updateVisit(String name, String dni, String visitReason, String personToVisit, String vehicle, String entryTime, String companions, String docId) {
+    return _visitsCollection.doc(docId).update({
+      'name': name,
+      'identification': dni,
+      'visitReason': visitReason,
+      'personToVisit': personToVisit,
+      'transportation': vehicle,
+      'entryTime': Timestamp.now(),
+      'companions': companions,
+    });
+  }
+
+  //DELETE
+  Future<void> deleteVisit(String docId) {
+    return _visitsCollection.doc(docId).delete();
+  }
+
+
 }
