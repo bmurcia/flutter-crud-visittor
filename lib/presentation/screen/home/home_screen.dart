@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(docId == null ? 'Add Visit' : 'Edit Visit'),
+          title: Text(docId == null ? 'Agregar Visita' : 'Editar Visita'),
 
           content: SingleChildScrollView(
             child: Column(
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               }, 
               
 
-              child: Text(docId == null ? 'Add Visit' : 'Edit Visit'),
+              child: Text(docId == null ? 'Agregar Visita' : 'Editar Visita'),
             )
           ],
         );
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome the Visit APP'),
+        title: const Text('Residencial CEUTEC'),
         backgroundColor: Colors.green[300]
       ),
       floatingActionButton: FloatingActionButton(
