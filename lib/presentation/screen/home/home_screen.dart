@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud_visitante/domain/services/firestore.dart';
@@ -21,6 +23,18 @@ class _HomePageState extends State<HomePage> {
   final entryTimeController = TextEditingController();
   final companionsController = TextEditingController();
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    dniController.dispose();
+    visitReasonController.dispose();
+    personToVisitController.dispose();
+    vehicleController.dispose();
+    entryTimeController.dispose();
+    companionsController.dispose();
+    super.dispose();
+  }
+
   void openVisitBox({String? docId}) {
 
     if (docId != null) {
@@ -34,6 +48,7 @@ class _HomePageState extends State<HomePage> {
             personToVisitController.text = data['personToVisit'];
             vehicleController.text = data['transportation'];
             companionsController.text = data['companions'];
+            entryTimeController.text = data['entryTime'] ?? '';
           });
         } else{
           nameController.clear();
@@ -41,6 +56,7 @@ class _HomePageState extends State<HomePage> {
           visitReasonController.clear();
           personToVisitController.clear();
           vehicleController.clear();
+          entryTimeController.clear();
           companionsController.clear();
         }
       });
@@ -103,7 +119,6 @@ class _HomePageState extends State<HomePage> {
                     'visitReason': visitReasonController.text,
                     'personToVisit': personToVisitController.text,
                     'transportation': vehicleController.text,
-                    'entryTime': Timestamp.now(),
                     'companions': companionsController.text,
                   });
                 }
@@ -113,6 +128,8 @@ class _HomePageState extends State<HomePage> {
                 personToVisitController.clear();
                 vehicleController.clear();
                 companionsController.clear();
+                entryTimeController.clear();
+
                 Navigator.of(context).pop();
               }, 
               
