@@ -130,6 +130,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Welcome the Visit APP'),
+        backgroundColor: Colors.green[300]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -149,24 +150,94 @@ class _HomePageState extends State<HomePage> {
                 String docId = document.id;
                 Map<String, dynamic> data = document.data() as Map<String, dynamic>;
                 String nameText = data['name'];
+                String dniText = data['identification'];
+                String personToVisit = data['personToVisit'];
 
-                return ListTile(
-                  title: Text(nameText),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () => openVisitBox(docId: docId),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: ()=> FirestoreService().deleteVisit(docId),
-                      ),
-                    ],
-                  )
-
+                return Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.green[300],
+                          child: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                nameText,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                dniText,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: [
+                                   const Text(
+                                    'Visita a:  ',
+                                    style:TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    personToVisit,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                openVisitBox(docId: docId);
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                _firestoreService.deleteVisit(docId);
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
+                      ]
+                      
+                    ),
+                  ),
                 );
+
+
+
+
+
+                
               },
             );
           } else {
